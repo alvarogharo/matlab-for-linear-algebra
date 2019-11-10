@@ -82,6 +82,86 @@ beq = [30];
 LB = [0,0,0];
 [x,fval,exitflag,output,lambda]=linprog(c,A,b,Aeq,beq,LB)
 
+%% 9.13
+A=[ 1 1 1;
+1 1 0]
+n = size(A,2);
+p = size(A,1);
+P=2*eye(n);
+Z=zeros(p);
+M=[P A'; A Z]
+bb=[0 0 0 2 2]';
+sol=M\bb
+xp=sol(1:n)
+nud=sol(n+1:end)
+A=[];B=[];
+H=P;
+f=[]; lb=[]; ub=[];
+Aeq=[ 1 1 1;
+1 1 0];
+Beq=[2 2]';
+X0=[0 0 0]';
+options = optimoptions('quadprog','Algorithm','interior-point-convex','Display','off');
+[X,fval,exitflag,output,lambda] = quadprog(H,f,A,B,Aeq,Beq,lb,ub,X0,options)
+lambda.eqlin
+
+%% 9.14
+A = [1, 2; 0, 0];
+n = size(A,2);
+p = size(A,1);
+P=2*eye(n);
+Z=zeros(p);
+M=[P A'; A Z]
+
+A=[];B=[];
+H=P;
+f=[]; lb=[]; ub=[];
+Aeq=[ 1, 2; 0, 0];
+Beq=[1, 0]';
+X0=[0, 0]';
+options = optimoptions('quadprog','Algorithm','interior-point-convex','Display','off');
+[X,fval,exitflag,output,lambda] = quadprog(H,f,A,B,Aeq,Beq,lb,ub,X0,options)
+lambda.eqlin
+
+%% 9.15
+f = [-2; -6];
+A = [1 1; -1 2; 2 1];
+b = [2; 2; 3];
+n = size(A,2);
+p = size(A,1);
+P=2*eye(n);
+Z=zeros(p);
+M=[P A'; A Z]
+
+H=P;
+%H = [1 -1; -1 2]; 
+
+[X,fval,exitflag,output,lambda] = quadprog(H,f,A,b)
+lambda.eqlin
+
+%% 9.16
+syms x y
+ff = 1/2*x^2+3*x+4*y
+%%hess = jacobian(ff)
+f = [3; 4];
+A = [-1 -3; 3 4];
+b = [15; 80];
+n = size(A,2);
+p = size(A,1);
+P=2*eye(n);
+Z=zeros(p);
+M=[P A'; A Z]
+M=[1 0; 0 1]
+
+H=P; 
+H = [1 -1; -1 2]; 
+lb=[0, 0];
+Aeq=[];
+Beq=[];
+
+[X,fval,exitflag,output,lambda] = quadprog(H,f,A,b,Aeq,Beq,lb)
+%lambda.eqlin
+
 %% 
 function f = myfun(x)
     f = -x(1) * x(2) * x(3);
