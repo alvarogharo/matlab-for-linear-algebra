@@ -141,25 +141,50 @@ lambda.eqlin
 
 %% 9.16
 syms x y
-ff = 1/2*x^2+3*x
+ff = (1/2)*x^2+3*x+4*y
 f = [3; 4];
 A = [-1 -3; 3 4];
-b = [15; 80];
+b = [-15; 80];
 n = size(A,2);
 p = size(A,1);
 P=2*eye(n);
 Z=zeros(p);
 M=[P A'; A Z]
 
-H=P; 
-H = [1 -1; -1 2]; 
+H= double(hessian(ff)); 
+
 lb=[0, 0];
 Aeq=[];
 Beq=[];
-
+options = optimoptions('quadprog','Algorithm','interior-point-convex','Display','off');
 [X,fval,exitflag,output,lambda] = quadprog(H,f,A,b,Aeq,Beq,lb)
 %lambda.eqlin
 
+
+%% Sergio
+clear all
+close all
+clc
+syms x y
+f = (1/2)*x.^2 + 3*x + 4*y;
+fx = diff(f,x);
+fy = diff(f,y);
+fxx = diff(fx,x);
+fxy = diff(fx,y);
+fyx = diff(fy,x);
+fyy = diff(fy,y);
+H = double([fxx fxy; fyx fyy])
+d = [3; 4];
+lb=[0, 0];
+Aeq=[];
+Beq=[];
+%los valores linealmente independientes, los que se quedan sueltos al derivar
+A = [ -1 -3; 3  4];
+B = [-15; 80];
+options = optimoptions('quadprog', 'Algorithm', 'interior-point-convex', 'Display', 'off');
+[xq, fval, exitflag, output, lambda] = quadprog(H,d,A,B,Aeq,Beq,lb);
+xq
+fval
 %% 
 function f = myfun(x)
     f = -x(1) * x(2) * x(3);
