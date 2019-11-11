@@ -3,7 +3,7 @@
 % I. Ramirez, E. Schiavi                                                  %
 % URJC - Madrid 2018                                                      %
 %%-----------------------------------------------------------------------%%
-function [varout]= pLap(varin)
+function [varout]= pLap_Deconvolution(varin)
 %-------------------------------------------------------------------------%
 %                             STOP Criteria                               %
 %-------------------------------------------------------------------------%
@@ -12,6 +12,12 @@ StopCriteria_e = 1e-6;
 %-------------------------------------------------------------------------%
 %                            Initializations                              %
 %-------------------------------------------------------------------------%
+
+
+kernel  = varin.kernel;
+kernel_F= varin.kernel_F;
+R           =@(x) real(ifft2(kernel_F.*fft2(x)));
+RT          =@(x) real(ifft2(conj(kernel_F).*fft2(x)));
 
 p       = varin.p;
 f       = varin.f;
@@ -41,39 +47,40 @@ for iter=1:Nit
     % Verbose
     switch Verbose
         case 0
+
             disp(['Iter: ',num2str(iter)])
+            
+        case 1
             if ~mod(iter,100)
                 imshow(u),pause(0.01)
             end
-        case 1
-            if ~mod(iter,100)
-                imshow(u),pause(0.01);
-            end
-            [en(iter),pr(iter),fi(iter)] = pEnergy(u,f,lambda,p);
+            [en(iter),pr(iter),fi(iter)] = pEnergy_R(u,f,lambda,p,R);
             psnr(iter) = PSNR(u,im_org);
             disp(['Iter: ',num2str(iter),' PSNR: ', num2str(psnr(iter)), ' Total Energy: ', num2str(en(iter)), ' Prior: ', num2str(pr(iter)), ' Fidelity: ',num2str(fi(iter)) ])
         case 2
-            [en(iter),pr(iter),fi(iter)] = pEnergy(u,f,lambda,p);
+            [en(iter),pr(iter),fi(iter)] = pEnergy_R(u,f,lambda,p,R);
             psnr(iter) = PSNR(u,im_org);
             subplot(131), imshow(u)
             subplot(132), plot(en,'r'), hold on,plot(fi,'b'),plot(pr,'g')
             legend('Total Energy','Fidelity','Prior'), grid on
             subplot(133), plot(psnr,'c'), legend('PSNR (db)'), grid on
             pause(0.01)
-    end% Los par�metros se agrupan en un struct por simplicidad
-
+    end
 %----------------------------- Completar ---------------------------------%
 
     % Algoritmo
-    ux = 
-    uy = 
+    ux = gradx(u);
+    uy = grady(u);
     
-    b = 
+    if p>1
+        epsilon=0;
+    end
+    b = sqrt(ux.^2 + uy.^2 + epsilon.^2).^(p-2);
     % Laplaciano   
-    lap =
+    lap = div(b.*ux,b.*uy);
+    wk = -lap + varin.lambda*RT(R(u)-f); %gradiente del funcional
     % Descenso
-
-    u  = 
+    u  = u - dt*wk;
 %----------------------------- Completar ---------------------------------%
 end
 % Variables de salida

@@ -47,7 +47,7 @@ for iter=1:Nit
             end
         case 1
             if ~mod(iter,100)
-                imshow(u),pause(0.01);
+                imshow(u),pause(0.01)
             end
             [en(iter),pr(iter),fi(iter)] = pEnergy(u,f,lambda,p);
             psnr(iter) = PSNR(u,im_org);
@@ -65,15 +65,17 @@ for iter=1:Nit
 %----------------------------- Completar ---------------------------------%
 
     % Algoritmo
-    ux = 
-    uy = 
-    
-    b = 
+    ux = gradx(u);
+    uy = grady(u);
+    if p>1
+        epsilon=0;
+    end
+    b = sqrt(ux.^2 + uy.^2 + epsilon.^2).^(p-2);
     % Laplaciano   
-    lap =
+    lap = div(b.*ux,b.*uy);
+    wk = -lap + varin.lambda.*(u-f); %gradiente del funcional
     % Descenso
-
-    u  = 
+    u  = u - dt*wk;
 %----------------------------- Completar ---------------------------------%
 end
 % Variables de salida
