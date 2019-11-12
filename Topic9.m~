@@ -12,14 +12,8 @@ b = [1;0];
 
 grad = gradient(f)
 
-% Esto genera las ecuaciones 2x + v1 = 0  y 2y + 2v1 = 0 y resolveiendo
-% tenemos                     y =  2x
-% y la anteriormente obtenida x = 1-2
-% soluciones x = 1/5;  y = 2/5;
+A' \ grad
 
-% Con esto v1 = -2/5; v2 puede ser lo que sea.
-
-%Se puede resolver con fmincon()
 
 
 %% Ejemplo 9.3
@@ -105,21 +99,6 @@ Aeq = [4, 1, 1];
 beq = [30];
 LB = [0,0,0];
 [x,fval,exitflag,output,lambda]=linprog(c,A,b,Aeq,beq,LB)
-
-%% Dualidad
-% Con condiciones lineales
-% Pasamos del problema primal al dual en el dual se busca un infimo de la
-% lagrangiana y con esto se obtiene la funcion dual, la cual debemos
-% maximizar ya que es concava.
-% Necesito calcular la funcion conjugada de mi función objetivo (primal)
-
-% pasar de min(f) = -max(-f)
-
-% buscar puntos de silla de la lagragiana del problema
-
-%% Programacion convexa lineal
-
-
 
 %% 9.13
 A=[ 1 1 1;
