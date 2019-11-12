@@ -132,5 +132,5 @@ norm(A*xmc - b)
 % Tambien es solucion del sistema original
 
 %% 5.4 (Apuntes pagina 74)
-
+    
 %% 5.5

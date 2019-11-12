@@ -51,6 +51,32 @@ beq = zeros(4,1);
 LB = [0,0];
 [x,fval,exitflag,output,lambda]=linprog(c,A,b,Aeq,beq,LB)
 
+%% 9.6 avanzado
+% Escribir en forma Estandar el problema de Maximizacion Lineal con
+% Restricciones dadas por desigualdades Lineales y desigualdades de no
+% negataividad max f(x1,x2) = max(x1+x2)
+
+% 2x1 +  x2 <= 4
+%  x1 + 2x2 <= 3
+%  x1       >= 0
+%        x2 >= 0
+% las escribimos como:
+% 2x1 +  x2 + s1       = 4
+%  x1 + 2x2      + s2  = 3
+%  x1                 >= 0
+%        x2           >= 0
+%            s1       >= 0
+%                  s2 >= 0
+
+% Con z - x1 -x2 = 0
+
+A = [ 1 -1 -1  0  0  0;
+      0  2  1  1  0  4;
+      0  1  2  0  1  3];
+
+rref(A)
+% De aqui deducimos que x1=1.667 x2=0.667 y z=2.333
+    
 %% 9.7
 c = [-1, -1/3];
 A = [1, 1; 1, 1/4; 1, -1; -1/4, -1; -1, -1; -1, 1];
